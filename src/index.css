@@ -12,3 +12,7 @@
   height: 300px;
   width: 2000px;
 }
+
+.todo-list:last-child {
+  border-bottom: none;
+}
