@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import Logo from './components/Logo';
 import Sunrise from './components/Sunrise';
@@ -10,9 +10,14 @@ export type TodoItem = {
   itemText: string;
 };
 
+const getArrayFromStorage = (id: string) => {
+  let todoItems = localStorage.getItem(id);
+  return todoItems ? JSON.parse(todoItems) : [];
+}; 
+
 const App = () => {
   const [newTodoItem, setNewTodoItem] = useState<string>('');
-  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const [todoItems, setTodoItems] = useState<TodoItem[]>(getArrayFromStorage("todoItems"));
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => { 
     e.preventDefault(); 
@@ -23,6 +28,15 @@ const App = () => {
     setTodoItems([newItems, ...todoItems]);
     setNewTodoItem('');
   }
+
+  const deleteTodoItem = (id: string) => {
+    setTodoItems(todoItems.filter((item) => item.id !== id));
+  };
+
+  useEffect(() => {
+    console.log('useEffect called for todoItems'); 
+    localStorage.setItem('todoItems', JSON.stringify(todoItems));
+  }, [todoItems]);
 
   return (
     <>
@@ -40,7 +54,7 @@ const App = () => {
             onChange={(e) => setNewTodoItem(e.target.value)}
             />
         </form>
-        <List todoItems={todoItems}/>
+        <List todoItems={todoItems} setTodoItems={setTodoItems} deleteTodoItem={deleteTodoItem}/>
     </main>
     </>
   );
