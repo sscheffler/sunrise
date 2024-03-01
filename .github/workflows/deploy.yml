@@ -50,6 +50,7 @@ jobs:
     name: Deploy to GCR
     needs: build
     runs-on: ubuntu-latest
+    on: workflow_dispatch
 
     steps:
       - name: Checkout Repo
